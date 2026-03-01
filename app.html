@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-content h1 {
+      font-size: 32px;
+      color: #667eea;
+      margin-bottom: 20px;
+    }
+
+    .header-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .stat {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .control-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-section {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-edit {
+      background: #f59e0b;
+      color: white;
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+
+    .btn-edit:hover {
+      background: #d97706;
+    }
+
+    .btn-delete {
+      background: #ef4444;
+      color: white;
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+
+    .btn-delete:hover {
+      background: #dc2626;
+    }
+
+    .form-section {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-section h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .student-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      background-color: #f8f9ff;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .form-status {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .form-status.success {
+      background: #d1fae5;
+      color: #065f46;
+      display: block;
+    }
+
+    .form-status.error {
+      background: #fee2e2;
+      color: #7f1d1d;
+      display: block;
+    }
+
+    .table-section {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .table-section h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+    }
+
+    .students-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .students-table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .students-table th {
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .students-table td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .students-table tbody tr {
+      transition: background-color 0.2s;
+    }
+
+    .students-table tbody tr:hover {
+      background-color: #f9fafb;
+    }
+
+    .students-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge.active {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-badge.inactive {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+
+    .status-badge.graduated {
+      background: #dbeafe;
+      color: #0c2d6b;
+    }
+
+    .status-badge.suspended {
+      background: #fef3c7;
+      color: #78350f;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+    }
+
+    .no-data td {
+      padding: 30px 15px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-content h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+
+    .modal-content p {
+      color: #666;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 768px) {
+      .header-content h1 {
+        font-size: 24px;
+      }
+
+      .header-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .search-section {
+        flex-direction: column;
+      }
+
+      .search-input {
+        min-width: 100%;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+
+      .students-table {
+        font-size: 12px;
+      }
+
+      .students-table th,
+      .students-table td {
+        padding: 10px;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        font-size: 12px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+
+      .header {
+        padding: 20px;
+      }
+
+      .form-section,
+      .table-section,
+      .control-panel {
+        padding: 20px;
+      }
+
+      .header-content h1 {
+        font-size: 20px;
+      }
+
+      .students-table {
+        font-size: 11px;
+      }
+
+      .students-table th,
+      .students-table td {
+        padding: 8px 5px;
+      }
+
+      .btn-edit,
+      .btn-delete {
+        padding: 6px 10px;
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <h1>Student Management System</h1>
+        <div class="header-stats">
+          <div class="stat">
+            <span class="stat-label">Total Students:</span>
+            <span class="stat-value" id="totalStudents">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Active:</span>
+            <span class="stat-value" id="activeStudents">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Average GPA:</span>
+            <span class="stat-value" id="averageGPA">0.00</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="control-panel">
+        <div class="search-section">
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Search by name or email..."
+          >
+          <button id="searchBtn" class="btn btn-primary">Search</button>
+          <button id="resetBtn" class="btn btn-secondary">Reset</button>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Add/Edit Student</h2>
+        <form id="studentForm" class="student-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input type="text" id="lastName" name="lastName" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dateOfBirth">Date of Birth</label>
+              <input type="date" id="dateOfBirth" name="dateOfBirth">
+            </div>
+            <div class="form-group">
+              <label for="gpa">GPA</label>
+              <input type="number" id="gpa" name="gpa" min="0" max="4" step="0.01">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="status">Status</label>
+              <select id="status" name="status">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Graduated">Graduated</option>
+                <option value="Suspended">Suspended</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" id="submitBtn" class="btn btn-success">Add Student</button>
+            <button type="reset" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+            <span id="formStatus" class="form-status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section class="table-section">
+        <h2>Students List</h2>
+        <div class="table-container">
+          <table id="studentsTable" class="students-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Date of Birth</th>
+                <th>GPA</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+              <tr class="no-data">
+                <td colspan="9">No students found. Add one to get started!</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h3>Confirm Delete</h3>
+      <p>Are you sure you want to delete this student? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+        <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Local Storage Database
+    class StudentDB {
+      constructor() {
+        this.storageKey = 'students_db';
+        this.nextId = this.getMaxId() + 1;
+      }
+
+      getMaxId() {
+        const students = this.getAllStudents();
+        return students.length > 0 ? Math.max(...students.map(s => s.id)) : 0;
+      }
+
+      getAllStudents() {
+        const data = localStorage.getItem(this.storageKey);
+        return data ? JSON.parse(data) : [];
+      }
+
+      getStudentById(id) {
+        const students = this.getAllStudents();
+        return students.find(s => s.id === parseInt(id));
+      }
+
+      addStudent(student) {
+        const students = this.getAllStudents();
+        student.id = this.nextId++;
+        student.createdAt = new Date().toISOString();
+        students.push(student);
+        localStorage.setItem(this.storageKey, JSON.stringify(students));
+        return student;
+      }
+
+      updateStudent(id, student) {
+        let students = this.getAllStudents();
+        students = students.map(s => s.id === parseInt(id) ? { ...s, ...student } : s);
+        localStorage.setItem(this.storageKey, JSON.stringify(students));
+      }
+
+      deleteStudent(id) {
+        let students = this.getAllStudents();
+        students = students.filter(s => s.id !== parseInt(id));
+        localStorage.setItem(this.storageKey, JSON.stringify(students));
+      }
+
+      searchStudents(query) {
+        const students = this.getAllStudents();
+        const lowerQuery = query.toLowerCase();
+        return students.filter(s => 
+          s.firstName.toLowerCase().includes(lowerQuery) ||
+          s.lastName.toLowerCase().includes(lowerQuery) ||
+          s.email.toLowerCase().includes(lowerQuery)
+        );
+      }
+
+      getStatistics() {
+        const students = this.getAllStudents();
+        const activeCount = students.filter(s => s.status === 'Active').length;
+        const inactiveCount = students.filter(s => s.status === 'Inactive').length;
+        const gpaList = students.map(s => s.gpa).filter(g => g !== null && g !== undefined);
+        const avgGPA = gpaList.length > 0 ? (gpaList.reduce((a, b) => a + b, 0) / gpaList.length) : 0;
+
+        return {
+          totalStudents: students.length,
+          activeStudents: activeCount,
+          inactiveStudents: inactiveCount,
+          averageGPA: Math.round(avgGPA * 100) / 100
+        };
+      }
+    }
+
+    const db = new StudentDB();
+    let students = [];
+    let editingStudentId = null;
+    let studentToDelete = null;
+
+    const studentForm = document.getElementById('studentForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const studentsTableBody = document.getElementById('studentsTableBody');
+    const formStatus = document.getElementById('formStatus');
+    const deleteModal = document.getElementById('deleteModal');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStudents();
+      loadStatistics();
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      studentForm.addEventListener('submit', handleFormSubmit);
+      cancelBtn.addEventListener('click', resetForm);
+      searchBtn.addEventListener('click', handleSearch);
+      resetBtn.addEventListener('click', handleReset);
+      confirmDeleteBtn.addEventListener('click', confirmDelete);
+      cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+      deleteModal.addEventListener('click', (e) => {
+        if (e.target === deleteModal) closeDeleteModal();
+      });
+    }
+
+    function loadStudents() {
+      students = db.getAllStudents();
+      renderStudentsTable(students);
+    }
+
+    function loadStatistics() {
+      const stats = db.getStatistics();
+      document.getElementById('totalStudents').textContent = stats.totalStudents;
+      document.getElementById('activeStudents').textContent = stats.activeStudents;
+      document.getElementById('averageGPA').textContent = stats.averageGPA.toFixed(2);
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      const formData = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        dateOfBirth: document.getElementById('dateOfBirth').value,
+        gpa: parseFloat(document.getElementById('gpa').value) || null,
+        status: document.getElementById('status').value
+      };
+
+      if (!formData.firstName || !formData.lastName || !formData.email) {
+        showError('First Name, Last Name, and Email are required');
+        return;
+      }
+
+      if (formData.email.indexOf('@') === -1) {
+        showError('Please enter a valid email address');
+        return;
+      }
+
+      const existingStudent = db.getAllStudents().find(s => 
+        s.email === formData.email && s.id !== editingStudentId
+      );
+      if (existingStudent) {
+        showError('This email address is already in use');
+        return;
+      }
+
+      try {
+        if (editingStudentId) {
+          db.updateStudent(editingStudentId, formData);
+          showSuccess('Student updated successfully!');
+        } else {
+          db.addStudent(formData);
+          showSuccess('Student added successfully!');
+        }
+        resetForm();
+        loadStudents();
+        loadStatistics();
+      } catch (error) {
+        showError('Operation failed: ' + error.message);
+      }
+    }
+
+    function resetForm() {
+      studentForm.reset();
+      editingStudentId = null;
+      submitBtn.textContent = 'Add Student';
+      formStatus.textContent = '';
+      formStatus.className = 'form-status';
+    }
+
+    function renderStudentsTable(data) {
+      if (data.length === 0) {
+        studentsTableBody.innerHTML = '<tr class="no-data"><td colspan="9">No students found. Add one to get started!</td></tr>';
+        return;
+      }
+
+      studentsTableBody.innerHTML = data.map(student => `
+        <tr>
+          <td>${student.id}</td>
+          <td>${student.firstName}</td>
+          <td>${student.lastName}</td>
+          <td>${student.email}</td>
+          <td>${student.phone || '-'}</td>
+          <td>${student.dateOfBirth || '-'}</td>
+          <td>${student.gpa !== null ? student.gpa : '-'}</td>
+          <td><span class="status-badge ${student.status.toLowerCase()}">${student.status}</span></td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn btn-edit" onclick="editStudent(${student.id})">Edit</button>
+              <button class="btn btn-delete" onclick="deleteStudent(${student.id})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function editStudent(id) {
+      const student = db.getStudentById(id);
+      
+      if (!student) {
+        showError('Student not found');
+        return;
+      }
+
+      document.getElementById('firstName').value = student.firstName;
+      document.getElementById('lastName').value = student.lastName;
+      document.getElementById('email').value = student.email;
+      document.getElementById('phone').value = student.phone || '';
+      document.getElementById('dateOfBirth').value = student.dateOfBirth || '';
+      document.getElementById('gpa').value = student.gpa !== null ? student.gpa : '';
+      document.getElementById('status').value = student.status;
+      
+      editingStudentId = student.id;
+      submitBtn.textContent = 'Update Student';
+      
+      document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function deleteStudent(id) {
+      studentToDelete = id;
+      deleteModal.classList.add('show');
+    }
+
+    function confirmDelete() {
+      if (!studentToDelete) return;
+
+      try {
+        db.deleteStudent(studentToDelete);
+        showSuccess('Student deleted successfully!');
+        closeDeleteModal();
+        loadStudents();
+        loadStatistics();
+      } catch (error) {
+        showError('Failed to delete student');
+      }
+    }
+
+    function closeDeleteModal() {
+      deleteModal.classList.remove('show');
+      studentToDelete = null;
+    }
+
+    function handleSearch() {
+      const query = searchInput.value.trim();
+      
+      if (!query) {
+        showError('Please enter a search term');
+        return;
+      }
+
+      const results = db.searchStudents(query);
+      renderStudentsTable(results);
+      showSuccess('Found ' + results.length + ' student(s)');
+    }
+
+    function handleReset() {
+      searchInput.value = '';
+      formStatus.textContent = '';
+      formStatus.className = 'form-status';
+      loadStudents();
+    }
+
+    function showSuccess(message) {
+      formStatus.textContent = message;
+      formStatus.className = 'form-status success';
+      setTimeout(() => {
+        formStatus.textContent = '';
+        formStatus.className = 'form-status';
+      }, 3000);
+    }
+
+    function showError(message) {
+      formStatus.textContent = message;
+      formStatus.className = 'form-status error';
+      setTimeout(() => {
+        formStatus.textContent = '';
+        formStatus.className = 'form-status';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
