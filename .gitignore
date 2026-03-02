@@ -1,0 +1,8 @@
+node_modules/
+data/students.db
+.env
+.env.local
+.vercel/
+dist/
+build/
+*.log
